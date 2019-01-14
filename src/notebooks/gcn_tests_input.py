@@ -111,7 +111,8 @@ def generateData():
     #g = Graph.GRG(100, 0.2)
     #g = Graph.Erdos_Renyi(100, 0.2)
     #g = Graph.Watts_Strogatz(1, 100, 4, 0.5 )
-    g = Graph.Barabasi(1700)
+    n_node = 1700
+    g = Graph.Barabasi(n_node)
     summary(g)
 
     # graph metrics
@@ -125,7 +126,9 @@ def generateData():
 
     # test.index
     # list first 5 nodes -> to test.index
-    testList = range(30)
+    n_train = 100
+    n_test = 300
+    testList = range(n_node-n_test, n_node)
     with open('ind.t1.test.index','wb') as f:
         for i in testList:
             f.write(str(i)+"\n")
@@ -144,39 +147,46 @@ def generateData():
     #   or node degree
     #  into a sparce matrix
     xFeatures = g.degree()
+    #xFeatures = [feature * 1.0 for feature in xFeatures]
+    xFeatures = np.array(xFeatures, np.float64)
     print(xFeatures[:10])
     # see if any degree is negative
     degs = np.array(xFeatures)
     degs2 = degs < 0
     degs3 = degs2.sum(axis=0)
     print(degs3)
-    x = copy.deepcopy(xFeatures)
-    tx = [ xFeatures[i] for i in testList]
+    allx = copy.deepcopy(xFeatures[range(n_node-n_test)])
+    x = copy.deepcopy(xFeatures[range(n_train)])
+    #tx = copy.deepcopy(xFeatures[range(n_node-n_test, n_node)])
+    tx = [xFeatures[i] for i in testList]
 
-
+    """
     # remove test List
     # remove also validation
-    for elem in tx:
-        x.pop(x.index(elem))
-
-    validationList = range(testList[-1], testList[-1]+500)
+    #for elem in tx:
+    #    x.pop(x.index(elem))
+    for elindex in testList:
+        x.pop(elindex)
+    
+    validationList = range(testList[-1]+1, testList[-1]+501)
     for elindex in validationList:
         x.pop(elindex)
-
+    """
     
-    allx = csr_matrix(xFeatures)
+    allx = csr_matrix(allx)
     allx = np.transpose(allx)
     pickleToDisk(allx, "ind.t1.allx")
-    x = np.transpose(x)
     x = csr_matrix(x)
+    x = np.transpose(x)
     pickleToDisk(x, "ind.t1.x")
     tx = csr_matrix(tx)
     tx = np.transpose(tx)
     pickleToDisk(tx, "ind.t1.tx")
 
     print(x.shape)
+    print(tx.shape)
     print(allx.shape)
-
+    
 
 
     # labels (ally,y , ty)
@@ -190,13 +200,14 @@ def generateData():
     prs = np.vstack((prs,prs2)).T
     pprint(prs)
 
-    prs_train = copy.deepcopy(prs)
-    prs_test = [ prs[i] for i in testList]
-    testList.extend(validationList)
-    finalList = testList
-    prs_train = [ prs[i] for i in range(prs.shape[0]) if i not in finalList ]
+    prs_all = copy.deepcopy(prs[range(n_node-n_test)])
+    prs_train = copy.deepcopy(prs[range(n_train)])
+    prs_test = [prs[i] for i in testList]
+    #testList.extend(validationList)
+    #finalList = testList
+    #prs_train = [ prs[i] for i in range(prs.shape[0]) if i not in finalList ]
 
-    ally = np.array(prs)
+    ally = np.array(prs_all)
     y = np.array(prs_train)  
     ty = np.array(prs_test)
 
@@ -204,10 +215,12 @@ def generateData():
     pickleToDisk(ally, "ind.t1.ally")
     pickleToDisk(y, "ind.t1.y")
     pickleToDisk(ty, "ind.t1.ty")
-
-    print(ally.shape)
-    print(ty.shape)
+    
     print(y.shape)
+    print(ty.shape)
+    print(ally.shape)
+    
+    
 
     # run training on those files
 
