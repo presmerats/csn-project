@@ -145,6 +145,22 @@ with open("embedding","w") as f:
 
         f.write("\n")
 
+# write class to file
+with open("embedding_labels","w") as f:
+    print(y_train.shape)
+    print(y_val.shape)
+    print(y_test.shape)
+
+    all_y = y_train + y_val + y_test
+
+    for elem in all_y:
+        
+        for e in elem:
+            f.write(str(e))
+            f.write(" ")
+
+        f.write("\n")
+
 
 
 
