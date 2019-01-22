@@ -77,9 +77,9 @@ def load_data(dataset_str):
     labels = np.vstack((ally, ty))
     labels[test_idx_reorder, :] = labels[test_idx_range, :]
 
-    print("len(y):",len(y))
-    print("labels shape:")
-    print(labels.shape)
+    #print("len(y):",len(y))
+    #print("labels shape:")
+    #print(labels.shape)
 
     idx_test = test_idx_range.tolist()
     idx_train = range(len(y))
@@ -91,9 +91,9 @@ def load_data(dataset_str):
     # print("idx_test", idx_test)
     # print("idx_train", idx_train)
     # print("idx_val", idx_val)
-    print("len(idx_train)",len(idx_train))
-    print("len(idx_val)",len(idx_val))
-    print("len(idx_test)",len(idx_test))
+    #print("len(idx_train)",len(idx_train))
+    #print("len(idx_val)",len(idx_val))
+    #print("len(idx_test)",len(idx_test))
     
 
     train_mask = sample_mask(idx_train, labels.shape[0])
