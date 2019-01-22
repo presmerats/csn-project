@@ -69,18 +69,23 @@ placeholders = {
 # Create model
 model = model_func(placeholders, input_dim=features[2][1], logging=True)
 
-# print("support", placeholders['support'])
-# print("features", placeholders['features'])
-# print("labels", placeholders['labels'])
+
 # Initialize session
 sess = tf.Session()
 
+# result variables
+global result_embedding
 
 # Define model evaluation function
 def evaluate(features, support, labels, mask, placeholders):
     t_test = time.time()
     feed_dict_val = construct_feed_dict(features, support, labels, mask, placeholders)
-    outs_val = sess.run([model.loss, model.accuracy], feed_dict=feed_dict_val)
+    outs_val = sess.run([model.loss, model.accuracy, model.outputs, model.embedding, model.vars], feed_dict=feed_dict_val)
+
+    global result_embedding
+    result_embedding = outs_val[3]
+    #print(outs_val[4])
+
     return outs_val[0], outs_val[1], (time.time() - t_test)
 
 
@@ -89,7 +94,6 @@ sess.run(tf.global_variables_initializer())
 
 cost_val = []
 
-embedding_result = []
 # Train model
 for epoch in range(FLAGS.epochs):
     t = time.time()
@@ -99,21 +103,8 @@ for epoch in range(FLAGS.epochs):
 
     #print(feed_dict)
     # Training step
-    outs = sess.run([model.opt_op, model.loss, model.accuracy, model.outputs, model.vars, model.embedding], feed_dict=feed_dict)
-    # # model weights
-    # print("weights")
-    # print(outs[-2].keys())
-    # pprint(outs[-2])
-    # # model output
-    # print("output")
-    # print(outs[-3].shape)
-    # pprint(outs[-3])
-    # # model embeddings
-    # print("embeddings")
-    # print(outs[-1].shape)
-    # pprint(outs[-1])
+    outs = sess.run([model.opt_op, model.loss, model.accuracy], feed_dict=feed_dict)
 
-    embedding_result = outs[-1]
 
     # Validation
     cost, acc, duration = evaluate(features, support, y_val, val_mask, placeholders)
@@ -135,32 +126,57 @@ test_cost, test_acc, test_duration = evaluate(features, support, y_test, test_ma
 print("Test set results:", "cost=", "{:.5f}".format(test_cost),
       "accuracy=", "{:.5f}".format(test_acc), "time=", "{:.5f}".format(test_duration))
 
-pprint(embedding_result)
-# write to file
-with open("embedding","w") as f:
-    for elem in embedding_result:
-        for e in elem:
-            f.write(str(e))
-            f.write(" ")
 
-        f.write("\n")
 
-# write class to file
-with open("embedding_labels","w") as f:
-    print(y_train.shape)
-    print(y_val.shape)
-    print(y_test.shape)
+def writeEmbeddingToDisk(result_embedding, labels, mask):
+    #pprint(result_embedding)
 
-    all_y = y_train + y_val + y_test
+    with open("embedding","w") as f:
+        count = 0
+        for elem in result_embedding:
 
-    for elem in all_y:
-        
-        for e in elem:
-            f.write(str(e))
-            f.write(" ")
+            for e in elem:
+                f.write(str(e))
+                f.write(" ")
 
-        f.write("\n")
+            f.write("\n")
+            count += 1
+
+        print(" total embedding size: ",count)
 
 
 
+    # print("labels.shape ",labels.shape)
+    # mask2 = [mask]*labels.shape[1]
+    # #print("mask2.shape",mask2.shape)
+    # mask3 = np.vstack(mask2)
+    # mask3 = np.transpose(mask3)
+    # print("mask3.shape",mask3.shape)
+    # new_labels = np.ma.masked_array(labels, mask3)
+    # labels = np.ma.compressed(new_labels)
+    # print(labels.shape)
+    with open("embedding_labels","w") as f:
+        for elem in labels:
 
+            for e in elem:
+                f.write(str(e))
+                f.write(" ")
+
+            f.write("\n")
+
+
+
+# pprint(y_train)
+# pprint(y_val)
+# pprint(y_test)
+# print(y_train.shape)
+# print(y_val.shape)
+print("y_test.shape")
+print(y_test.shape)
+print("test_mask.shape")
+print(test_mask.shape)
+# all_y = y_train + y_val + y_test
+
+# print("final result_embedding is")
+# print(result_embedding)
+writeEmbeddingToDisk(result_embedding, y_test, test_mask)
