@@ -1,0 +1,271 @@
+\documentclass[a4paper]{article}
+
+
+
+
+%%%%%%%% CREATE DOCUMENT STRUCTURE %%%%%%%%
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+%\usepackage{subfig}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=2cm,right=2cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{caption}
+\usepackage{subcaption}
+%\usepackage{sectsty}
+%\usepackage{apacite}
+\usepackage{float}
+\usepackage{titling} 
+\usepackage{blindtext}
+\usepackage[square,sort,comma,numbers]{natbib}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{xcolor}
+\usepackage{indentfirst}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{adjustbox}
+\usepackage{listings}
+%\usepackage{wrapfig}
+\usepackage[linesnumbered,algoruled,boxed,lined]{algorithm2e}
+\setlength\parskip{.5\baselineskip plus .1\baselineskip  minus .1\baselineskip}
+\setlength{\parindent}{1em}
+\definecolor{darkgreen}{rgb}{0.0, 0.4, 0.0}
+
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+
+\title{CSN - Project}
+\author{Pau Rodríguez Esmerats, Wangyang Ye }
+
+%{\large \today}\\[2cm] % Date, change the \today to a set date if you want to be precise
+\setlength\parindent{0pt}
+%%%%%%%% DOCUMENT %%%%%%%%
+\begin{document}
+
+
+%
+%----------------------------------------------------------------------------------------
+%   HEADING SECTIONS
+%----------------------------------------------------------------------------------------
+
+
+
+\begin{minipage}{0.6\textwidth}
+\begin{flushleft} \large
+\textsc{\textbf{\Large CSN Project}} -  \textsc{\large Graph Neural Networks and network metrics }\\[0.5cm] % Minor heading such as course title
+\end{flushleft}
+\end{minipage}
+~
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\includegraphics[scale=0.17]{img/fib2.png}\\[0.3cm]
+\end{flushright}
+\end{minipage}
+ 
+
+
+\begin{minipage}{0.7\textwidth}
+\begin{flushleft} 
+\emph{Students:}\\
+Wangyang Ye,\\ Pau Rodríguez Esmerats  % Your name
+\end{flushleft}
+\end{minipage}
+~
+\begin{minipage}{0.3\textwidth}
+\begin{flushleft}
+\emph{Date:}\\
+\today
+\end{flushleft}
+\end{minipage}\\[0.5cm]
+
+\begin{abstract}
+%\textbf{What is a Graph Neural Network?} \\
+A Graph Neural Network is a representation learning model that learns to represent graph structure in a low-dimensional embedding space.
+%\textbf{Current trends/state of the art.}\\ 
+Graph Neural Networks and its recent variations belong to a group of techniques ranging from summary graph statistics to matrix factorization and random-walk based methods that aim to summarize graph properties by extracting features that are later on used on well-known machine learning tasks, usually to perform node or sub-graph classification or link prediction.
+%\textbf{What this project is about.}\\
+In this project, we will use the Graph Convolutional Network model to study how an embedding related to the PageRank metric is generated. We will also study the effect of combining different graph metrics and node features when generating the resulting embedding aimed at node classification, and possibly explore the application of another Graph Neural Network model in a trivial sub-graph classification task.
+
+\end{abstract}
+
+\section{Introduction}
+
+\textbf{What is a Graph Neural Network?} \\
+A Graph Neural Network is a representation learning model that learns to represent graph structure in a low-dimensional embedding space. The first Graph Neural Network model ( Scarcelli et al. \cite{Scarselli}) reads a graph with its nodes, their attributes and their edges as the input of a neural network that mimics the graph structure, using iterative convergence mechanism in the forward and backward passes to update unit weights. 
+Many different variations have appeared since then. They all approach different aspects like training method, node neighborhood information representation as well as type of result embedding (node, edge, sub-graph or graph embedding) in different ways. For example, Graph Convolutional Network do not require an iterative convergence mechanism in forward and backward passes in the training steps. 
+
+\textbf{Embeddings techniques overview} \\
+Moreover, those models belong to a group of techniques that aim to summarize graph properties by extracting features. They go from summary graph statistics, kernel functions and hand-engineered features, to shallow unsupervised embeddings based on matrix factorization and random-walk based techniques, to encoder-decoder architectures and more recently to the Graph Neural Networks and their variants. These series of techniques can be grouped by the embedding targets which are: node embeddings, aggregation node embeddings, structural role embeddings, subgraph embeddings and edge embeddings.
+
+\textbf{Main goal} \\
+The main goal of those models is to perform node, subgraph or graph classification and link prediction. They usually learn an embedding that is later used in a well-known machine learning algorithm for classification, regression or clustering.
+
+\textbf{Application fields}\\
+Many fields can benefit from Graph Neural Network models. Mainly all those that need to perform node or sub-graph classification and link prediction task will benefit Graph Neural Networks, e.g. recommender systems (missing friendship links, affinities between users and content), computational biology (protein interaction graphs that are incomplete or noisy), program understanding(satisfaction of properties), statistical relational learning (predict missing relations between entities in a knowledge graph).
+
+
+\textbf{What this project is about, details.}\\
+In this project, we will use the Graph Convolutional Network model to study how an embedding related to the PageRank metric is generated. We will also study the effect of combining different graph metrics and node features when generating the resulting embedding aimed at node classification, and possibly explore the application of another Graph Neural Network model in a trivial sub-graph classification task.
+
+\textbf{Layout of the following sections.}
+Section 2 of this report will summarize the current representation learning techniques on graphs with a very basic comparison between them and then explain the important details of the selected models with which experiments are performed. Section 3 will explain the experiments performed by stating their goal, the data set used and the expected results. Section 4 will present the results of the experiments and section 5 will discuss the differences between the results and our initial expectations and/or assumptions. In section 6 we will conclude the report by reviewing the most important results and state in what direction future work could be oriented.
+
+
+\section{Related Work}
+
+
+
+\textbf{Overview of representation learning on graphs:}
+\begin{itemize}
+    \item node embeddings, 
+    \item aggregation node embeddings, 
+    \item structural role embeddings, 
+    \item subgraph embeddings, 
+    \item edge embeddings
+\end{itemize}
+
+\textbf{The Graph Neural Network model summary }
+
+\textbf{Evolution of Graph Neural Networks (GNN) summary }
+
+The main idea of GNN is to generate node embeddings by the means of aggregating neighborhood information. There are many variants of GNN and the main difference among them are the approaches on aggregating neighbors' messages.  
+\begin{itemize}
+    \item Graph Neural Network: as a basis, GNN generate node embeddings using local neighborhood by averaging messages from neighbors and applying neural networks. 
+    \item Graph Convolutional Network (GCN)
+    \item Graph Attention Networks
+    \item Gated Graph Neural Network (GGNN)
+    \item Graph Sampling and Aggregation
+    \item Message Passing Neural Network (MPNN)
+    
+\end{itemize}
+
+\textbf{The Graph Convolutional Network}
+
+
+\section{Methodology}
+
+As a starting point, 3 possible analysis are considered:
+\begin{itemize}
+    \item PageRank embedding: use GCN to create an embedding of a graph for which each node has it's PageRank as a feature. Analyse the resulting embedding, for example by creating a simple embedding of the same graph by MDS (distance matrix of PageRank of nodes) and comparing with the previous. One result that could appear is because of the fact that the first embedding has some information of the structure of the graph whereas the second embedding uses only the PageRank value,  some differences may appear and probably changing the structure of the graph (modifying edges) will modify the first embedding and not the second.
+    
+    \item Node classification: create a graph and compute different graph metrics ( the more heterogeneous the better), which will be saved as node features. Train the GCN model to classify nodes according to some specific combination of those metrics, like for example PageRank > Clustering coeff & degree < |N|/10. We could generated different small graphs that are easy to plot, and then also plot the resulting embedding (obviously slices of 2D planes of the embedding only).
+    
+    \item Subgraph classification: create a graph that has many different subgraphs that are crearly different ("clic",tree, cyclic,). Use a subgraph classification Graph model (GNN, MPNN, GAT) to learn to classify the subgraphs. Analyse the embedding.
+\end{itemize}
+
+\subsection{Analysis}
+% the methodology you plan to follow, 
+We will first test the accuracy of the Graph Neural Network model. The networks and their computed metrics will be used as paired examples for training and testing the model.
+We will study the resulting embeddings computed for the different metrics, for example by comparing them.
+Then we will study how a model trained on a specific metric will perform when used to compute another one.
+
+% any details you think are relevant and of interest.
+If there is enough time, we will consider the comparison with other derived models like for example some of the models listed in . Also we will take into consideration if it makes sense to compare them or if they are too different to be compared (at the moment we are still not 100\% sure).
+
+\subsection{Data}
+% the data that you are going to use, 
+We will generate different kinds of networks (with different models ER, BA, Watts-Strogatz, etc..) with different sizes and we will compute different network metrics (centrality measures, clustering coefficients, etc) on each of them. If there's enough time we could also use networks from real examples (dbpedia, imdb, etc..).
+
+
+
+\section{Results}
+
+
+\section{Discussion}
+
+\section{Conclusion}
+
+
+
+
+
+\begin{thebibliography}{9}
+
+\bibitem{Scarselli} 
+Franco Scarselli, Marco Gori, Fellow, IEEE, Ah Chung Tsoi, Markus Hagenbuchner, Member, IEEE, and Gabriele Monfardini
+\textit{The Graph Neural Network Model}. 
+IEEE TRANSACTIONS ON NEURAL NETWORKS, VOL. 20, NO. 1, JANUARY 2009.
+ 
+ 
+ \bibitem{Battaglia} 
+Peter W. Battaglia∗
+, Jessica B. Hamrick
+, Victor Bapst
+,
+Alvaro Sanchez-Gonzalez
+, Vinicius Zambaldi
+, Mateusz Malinowski
+,
+Andrea Tacchetti
+, David Raposo
+, Adam Santoro
+, Ryan Faulkner
+,
+Caglar Gulcehre
+, Francis Song
+, Andrew Ballard
+, Justin Gilmer
+,
+George Dahl
+, Ashish Vaswani
+, Kelsey Allen3
+, Charles Nash4
+,
+Victoria Langston
+, Chris Dyer
+, Nicolas Heess
+,
+Daan Wierstra
+, Pushmeet Kohli
+, Matt Botvinick
+,
+Oriol Vinyals
+, Yujia Li
+, Razvan Pascanu
+\textit{Relational inductive biases, deep learning, and graph networks}. 
+arXiv:1806.01261v3, 2018
+
+\bibitem{Bronstein} 
+Bronstein, M. M., Bruna, J., LeCun, Y., Szlam, A., and Vandergheynst, P.
+\textit{ Geometric deep learning: going beyond euclidean data}. 
+IEEE Signal Processing Magazine, 34(4):18–42 (2017).
+
+\bibitem{Hamilton} 
+William L. Hamilton, Rex Ying, Jure Leskovec
+\textit{ Representation Learning on Graphs: Methods and Applications}. 
+arXiv:1709.05584v3  (2018).
+
+\bibitem{KipfWeb} 
+Thomas Kipf
+\textit{ Graph Convolutional Networks}. 
+https://tkipf.github.io/graph-convolutional-networks/  (2016).
+
+
+ 
+\end{thebibliography}
+
+\bibliographystyle{unsrt}
+
+%\bibliography{bib} 
+
+
+\end{document}
+
+
