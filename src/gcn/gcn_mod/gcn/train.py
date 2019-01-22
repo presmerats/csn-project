@@ -89,6 +89,7 @@ sess.run(tf.global_variables_initializer())
 
 cost_val = []
 
+embedding_result = []
 # Train model
 for epoch in range(FLAGS.epochs):
     t = time.time()
@@ -99,18 +100,20 @@ for epoch in range(FLAGS.epochs):
     #print(feed_dict)
     # Training step
     outs = sess.run([model.opt_op, model.loss, model.accuracy, model.outputs, model.vars, model.embedding], feed_dict=feed_dict)
-    # model weights
-    print("weights")
-    print(outs[-2].keys())
-    pprint(outs[-2])
-    # model output
-    print("output")
-    print(outs[-3].shape)
-    pprint(outs[-3])
-    # model embeddings
-    print("embeddings")
-    print(outs[-1].shape)
-    pprint(outs[-1])
+    # # model weights
+    # print("weights")
+    # print(outs[-2].keys())
+    # pprint(outs[-2])
+    # # model output
+    # print("output")
+    # print(outs[-3].shape)
+    # pprint(outs[-3])
+    # # model embeddings
+    # print("embeddings")
+    # print(outs[-1].shape)
+    # pprint(outs[-1])
+
+    embedding_result = outs[-1]
 
     # Validation
     cost, acc, duration = evaluate(features, support, y_val, val_mask, placeholders)
@@ -132,8 +135,16 @@ test_cost, test_acc, test_duration = evaluate(features, support, y_test, test_ma
 print("Test set results:", "cost=", "{:.5f}".format(test_cost),
       "accuracy=", "{:.5f}".format(test_acc), "time=", "{:.5f}".format(test_duration))
 
+pprint(embedding_result)
+# write to file
+with open("embedding","w") as f:
+    for elem in embedding_result:
+        for e in elem:
+            f.write(str(e))
+            f.write(" ")
+
+        f.write("\n")
 
 
-print("support", placeholders['support'])
-print("features", placeholders['features'])
-print("labels", placeholders['labels'])
+
+
